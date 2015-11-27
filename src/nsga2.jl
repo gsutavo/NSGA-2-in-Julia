@@ -5,15 +5,19 @@
 #
 ##
 
-#Tipo Individualrepresenta uma possível solução
+#Tipo Individual representa uma possível solução
 
 type Individual
   genotype::Array{Int8,1} # representa o código genético dessa solução: um vetor com valores 0 e 1
+  fenotype::Array{Int32}  # representa as características emergentes do genótipo
   Sp::Array{Individual,1} # vetor de soluções dominadas por esse indivíduo, inicializado vazio
   np::Int                 # número de outros indivíduos que dominam esse, inicializado em 0
-
-  Individual(size::Int) = new(initGene(size), [],0) # construtor do tipo
-
+  fitness::Int            # valor de fitness, igual ao rank ou front que essa solução
+  function Individual(size::Int) # construtor do tipo
+    genotype = initGene(size)
+    fenotype = initFenotype(genotype)
+    new(genotype,fenotype ,[],0,0)
+  end
 end
 
 # Função initGene recebe o valor de tamanho do gene (size) e cria um array desse tamanho com valores aleatórios 0 ou 1
@@ -27,6 +31,21 @@ function initGene(size::Int)
    return array
 end
 
+#Função initFenotype recebe o genótipo e calcula o fenótipo relativo
+#Nesse caso, é o número de 1's presentes
+function initFenotype(entry::Array)
+  x = 0
+  for i = 1:length(entry)
+    if entry[i] > 0
+      x += 1
+    end
+  end
+  exit::Array{Int32} = []
+  exit = push!(exit, x)
+  printsum(exit)
+  return exit
+end
+
 #Função initPopulation recebe o valor do tamanho da população (pop_size) e cria uma população com esse número de indivíduos
 # retorna vetor de indivíduos
 function initPopulation(pop_size::Int)
@@ -38,6 +57,7 @@ function initPopulation(pop_size::Int)
 end
 
 function nsga2()
+  #Testes
   P = initPopulation(5)
   v1 = initGene(5)
   v2 = initGene(5)
@@ -51,7 +71,7 @@ function nsga2()
   singleBitMutation(v1)
   printsum(v1)
 
-  #printsum(P)
+  printsum(P)
 end
 
 #Função singleBitMutation recebe um vetor e troca o valor de um locus aleatório
