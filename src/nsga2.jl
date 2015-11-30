@@ -5,6 +5,9 @@
 #
 ##
 
+# Determina o tamanho dos genes
+geneSize = 5
+
 #Tipo Individual representa uma possível solução
 
 type Individual
@@ -42,7 +45,6 @@ function initFenotype(entry::Array)
   end
   exit::Array{Int32} = []
   exit = push!(exit, x)
-  printsum(exit)
   return exit
 end
 
@@ -51,7 +53,7 @@ end
 function initPopulation(pop_size::Int)
     population::Array{Individual} =[]
   for i = 1:pop_size
-    population = push!(population, Individual(20))
+    population = push!(population, Individual(geneSize))
   end
  return population
 end
@@ -59,22 +61,13 @@ end
 function nsga2()
   #Testes
   P = initPopulation(5)
-  v1 = initGene(5)
-  v2 = initGene(5)
-  printsum(v1)
-  printsum(v2)
-  crossover(v1,v2)
-
-  printsum(v1)
-  printsum(v2)
-
-  singleBitMutation(v1)
-  printsum(v1)
-
+  printsum(P)
+  println("---------------------------")
+  sort!(P, lt = (x,y)-> x.fenotype[1] > y.fenotype[1])
   printsum(P)
 end
 
-#Função singleBitMutation recebe um vetor e troca o valor de um locus aleatório
+#Função singleBitMutation recebe um vetor e troca o valor em um locus aleatório
 function singleBitMutation(gene::Array)
   x = rand(0:length(gene))
   if gene[x] > 0
@@ -84,7 +77,7 @@ function singleBitMutation(gene::Array)
   end
 end
 
-#Função crossover recebe dois vetores e troca os valores entre eles a partir de um locus aleatório
+#Função crossover recebe dois vetores e troca os valores entre eles a partir em um locus aleatório
 function crossover(geneA::Array{Int8} , geneB::Array{Int8})
   if length(geneA) !=  length(geneB)
     println("Erro na função crossover: tamanho dos genes diferentes.")
