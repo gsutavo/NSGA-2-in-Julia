@@ -1,5 +1,5 @@
 ##
-# 2 de dezembro de 2015
+# 3 de dezembro de 2015
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida 10/0012183
 #
@@ -7,7 +7,6 @@
 
 # Determina algumas constantes
 geneSize = 5
-initial_pop_size = 6 # número par
 pop_size = 10        # número par
 crossover_prob = 0.5
 mutation_prob = 1/pop_size
@@ -125,11 +124,11 @@ function printsum(a)
 end
 #--
 
-#Função expandPopulation recebe a população original e o tamanho da população e cria novos indivíduos
+#Função expandPopulation recebe a população original e dobra o número novos indivíduos
 # Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
-function expandPopulation(p::Array{Individual}, pop_size)
-
-  for i = 1:((pop_size - length(p))/2)
+function expandPopulation(p::Array{Individual})
+   q::Array{Individual} =[]
+  for i = 1:((length(p))/2)
       newIndividual      = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
       otherNewIndividual = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
         if rand(0:1) >= crossover_prob
@@ -141,10 +140,10 @@ function expandPopulation(p::Array{Individual}, pop_size)
         if rand(0:1) >= mutation_prob
           singleBitMutation(otherNewIndividual)
         end
-     p = push!(p, newIndividual)
-     p = push!(p, otherNewIndividual)
+     q = push!(q, newIndividual)
+     q = push!(q, otherNewIndividual)
   end
-
+  append!(p,q)
 end
 
 #Função binaryTournament recebe dois indivíduos e os compara, retorna cópia do melhor
@@ -169,15 +168,41 @@ end
 #Função que imprime alguns valores de uma população de indivíduos
 function printPopulation(p::Array{Individual})
   for i = 1:length(p)
-    print(i, " : ", p[i].genotype)
-    println(" : ", p[i].fenotype)
+  println("--------------------")
+  println("Genotype:",repr(p[i].genotype))
+  println("Fenotype:",repr(p[i].fenotype))
+  println("Sp:",summary(p[i].Sp))
+  println("Np:",repr(p[i].np))
   end
+end
+
+#Função que determina o valor dos fronts, np e Sp
+function setFronts(p::Array{Individual})
+  for i = 1:length(p)
+    for j = 1:length(p)
+      if i != j
+        if  (dominates(p[i],p[j]))
+          p[i].Sp = push!(p[i].Sp, p[j])
+          p[j].np += 1
+        end
+      end
+    end
+  end
+  sort!(p, lt = (x,y)-> x.np < y.np)
+
+end
+
+#Função simplificada do processo de domicação
+function dominates(a::Individual, b::Individual)
+  return a.fenotype[1] < b.fenotype[1]
 end
 
 function nsga2()
   #Testes
-  P = initPopulation(initial_pop_size)
-  expandPopulation(P,pop_size)
+  P = initPopulation(pop_size)
+  expandPopulation(P)
+  printsum(P)
+  setFronts(P)
   printPopulation(P)
-  #sort!(P, lt = (x,y)-> x.fenotype[1] > y.fenotype[1])
+
 end
