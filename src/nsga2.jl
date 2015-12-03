@@ -127,10 +127,11 @@ end
 
 #Função expandPopulation recebe a população original e o tamanho da população e cria novos indivíduos
 # Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
-function expandPopulation(p0::Array{Individual}, pop_size)
-  for i = 1:(pop_size - length(p0)/2)
-      newIndividual      = binaryTournament(p0[rand(1:length(p0))],p0[rand(1:length(p0))])
-      otherNewIndividual = binaryTournament(p0[rand(1:length(p0))],p0[rand(1:length(p0))])
+function expandPopulation(p::Array{Individual}, pop_size)
+
+  for i = 1:((pop_size - length(p))/2)
+      newIndividual      = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
+      otherNewIndividual = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
         if rand(0:1) >= crossover_prob
           crossover(newIndividual, otherNewIndividual)
         end
@@ -140,6 +141,8 @@ function expandPopulation(p0::Array{Individual}, pop_size)
         if rand(0:1) >= mutation_prob
           singleBitMutation(otherNewIndividual)
         end
+     p = push!(p, newIndividual)
+     p = push!(p, otherNewIndividual)
   end
 
 end
@@ -163,14 +166,18 @@ function binaryTournament(firstContender::Individual, secondContender::Individua
   end
 end
 
+#Função que imprime alguns valores de uma população de indivíduos
+function printPopulation(p::Array{Individual})
+  for i = 1:length(p)
+    print(i, " : ", p[i].genotype)
+    println(" : ", p[i].fenotype)
+  end
+end
 
 function nsga2()
   #Testes
   P = initPopulation(initial_pop_size)
   expandPopulation(P,pop_size)
-  printsum(P)
-
-  println("---------------------------")
+  printPopulation(P)
   #sort!(P, lt = (x,y)-> x.fenotype[1] > y.fenotype[1])
-  printsum(P)
 end
