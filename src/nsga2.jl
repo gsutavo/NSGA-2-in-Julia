@@ -5,11 +5,12 @@
 #
 ##
 
-# Determina algumas constantes
-geneSize = 5
-pop_size = 10        # número par
+# Determina constantes
+geneSize = 20
+pop_size = 20        # número par
 crossover_prob = 0.5
 mutation_prob = 1/pop_size
+generationNumber = 100
 
 include("Individual.jl")
 include("initialization.jl")
@@ -70,7 +71,20 @@ function setFronts(p::Array{Individual})
       end
     end
   end
+
   sort!(p, lt = (x,y)-> x.np < y.np) # Ordena a população com o valor de np ascendente
+  lowestNp = p[1].np
+  current_rank = 1
+
+  for i = 1:length(p)
+    if p[i].np == lowestNp
+       p[i].rank = current_rank
+    else
+      current_rank+=1
+      lowestNp = p[i].np
+      p[i].rank = current_rank
+    end
+  end
 
 end
 
@@ -79,14 +93,32 @@ function dominates(a::Individual, b::Individual)
   return a.fenotype[1] < b.fenotype[1]
 end
 
+#Função que reinicia os valores de np e Sp
+function reset(p::Array{Individual})
+   for i = 1:length(p)
+    p[i].np = 0
+    p[i].Sp = []
+  end
+end
+
 function nsga2()
   #Testes
-  P = initPopulation(pop_size)
-  expandPopulation(P)
-  printsum(P)
-  setFronts(P)
+  P = initPopulation(pop_size) # População de tamanho pop_size é criada
+  expandPopulation(P)          # População inicial é expandida tamanho 2*pop_size, população pai + população filha
+  setFronts(P)                 # Determina o valor dos np e ranks
   printPopulation(P)
 
+  for i = 1:generationNumber
+       newP = P[1:pop_size]
+       reset(newP)
+       expandPopulation(newP)
+       setFronts(newP)
+       P = newP
+  end
 
+  println("-----------------------------------")
+  println("População final")
+  println("-----------------------------------")
+  printPopulation(P)
 
 end

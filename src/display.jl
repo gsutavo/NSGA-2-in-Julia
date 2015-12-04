@@ -13,6 +13,7 @@ function printPopulation(p::Array{Individual})
   println("Fenotype:",repr(p[i].fenotype))
   println("Sp:",summary(p[i].Sp))
   println("Np:",repr(p[i].np))
+  println("Rank:", p[i].rank)
   end
 end
 

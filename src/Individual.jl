@@ -12,7 +12,7 @@ type Individual
   fenotype::Array{Int32}  # representa as características emergentes do genótipo
   Sp::Array{Individual,1} # vetor de soluções dominadas por esse indivíduo, inicializado vazio
   np::Int                 # número de outros indivíduos que dominam esse, inicializado em 0
-  fitness::Int            # valor de fitness, igual ao rank ou front que essa solução
+  rank::Int               # rank ou front que essa solução pertence
   function Individual(size::Int) # construtor do tipo recebe inteiro e cria o Individual com valores aleatórios
     genotype = initGene(size)
     fenotype = initFenotype(genotype)
