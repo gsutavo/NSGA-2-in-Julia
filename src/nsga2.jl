@@ -1,5 +1,5 @@
 ##
-# 3 de dezembro de 2015
+# 4 de dezembro de 2015
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida 10/0012183
 #
@@ -11,118 +11,11 @@ pop_size = 10        # número par
 crossover_prob = 0.5
 mutation_prob = 1/pop_size
 
+include("Individual.jl")
+include("initialization.jl")
+include("variation.jl")
+include("display.jl")
 
-#Tipo Individual representa uma possível solução
-
-type Individual
-  genotype::Array{Int8,1} # representa o código genético dessa solução: um vetor com valores 0 e 1
-  fenotype::Array{Int32}  # representa as características emergentes do genótipo
-  Sp::Array{Individual,1} # vetor de soluções dominadas por esse indivíduo, inicializado vazio
-  np::Int                 # número de outros indivíduos que dominam esse, inicializado em 0
-  fitness::Int            # valor de fitness, igual ao rank ou front que essa solução
-  function Individual(size::Int) # construtor do tipo recebe inteiro e cria o Individual com valores aleatórios
-    genotype = initGene(size)
-    fenotype = initFenotype(genotype)
-    new(genotype,fenotype ,[],0,0)
-  end
-  function Individual(gene::Array{Int8}) # construtor do tipo que recebe vetor de inteiros e cria o Individual com ele como genotype
-    genotype = copy(gene)
-    fenotype = initFenotype(genotype)
-    new(genotype,fenotype,[],0,0)
-  end
-end
-
-# Função initGene recebe o valor de tamanho do gene (size) e cria um array desse tamanho com valores aleatórios 0 ou 1
-# retorna vetor completo
-
-function initGene(size::Int)
-    array::Array{Int8,1} = []
-  for i = 1:size
-    array = push!(array,rand(0:1))
-  end
-   return array
-end
-
-#Função initFenotype recebe o genótipo e calcula o fenótipo relativo
-#Nesse caso, é o número de 1's presentes
-function initFenotype(entry::Array)
-  x = 0
-  for i = 1:length(entry)
-    if entry[i] > 0
-      x += 1
-    end
-  end
-  exit::Array{Int32} = []
-  exit = push!(exit, x)
-  return exit
-end
-
-#Função initPopulation recebe o valor do tamanho da população (pop_size) e cria uma população com esse número de indivíduos
-# retorna vetor de indivíduos
-function initPopulation(pop_size::Int)
-    population::Array{Individual} =[]
-  for i = 1:pop_size
-    population = push!(population, Individual(geneSize))
-  end
- return population
-end
-
-#Função singleBitMutation recebe um vetor e troca o valor em um locus aleatório
-function singleBitMutation(gene::Array)
-  x = rand(1:length(gene))
-  if gene[x] > 0
-    gene[x] = 0
-  else
-    gene[x] = 1
-  end
-end
-
-#Função singleBitMutation versão Individual
-function singleBitMutation(individualA::Individual)
-  x = rand(1:length(individualA.genotype))
-  if individualA.genotype[x] > 0
-     individualA.genotype[x] = 0
-  else
-     individualA.genotype[x] = 1
-  end
-    individualA.fenotype = initFenotype(individualA.genotype)
-end
-
-#Função crossover recebe dois vetores e troca os valores entre eles a partir em um locus aleatório
-function crossover(geneA::Array{Int8} , geneB::Array{Int8})
-  if length(geneA) !=  length(geneB)
-    println("Erro na função crossover: tamanho dos genes diferentes.")
-    return
-  end
-  i = rand(1:length(geneA))
-  #println(i) # Imprime locus aleatório
-  v_aux = copy(geneA)
-  geneA[i:end] = geneB[i:end]
-  geneB[i:end] = v_aux[i:end]
-end
-#Versão para tipo Individual
-function crossover(individualA::Individual,individualB::Individual)
-  if length(individualA.genotype) !=  length(individualB.genotype)
-    println("Erro na função crossover: tamanho dos genes diferentes.")
-    return
-  end
-  i = rand(1:length(individualA.genotype))
-  #println(i) # Imprime locus aleatório
-  v_aux = copy(individualA.genotype)
-  individualA.genotype[i:end] = individualB.genotype[i:end]
-  individualB.genotype[i:end] = v_aux[i:end]
-
-  individualA.fenotype = initFenotype(individualA.genotype)
-  individualB.fenotype = initFenotype(individualB.genotype)
-
-end
-
-# Retirado de http://samuelcolvin.github.io/JuliaByExample/#Arrays
-function printsum(a)
-    # summary generates a summary of an object
-    println(summary(a), ": ", repr(a))
-end
-#--
 
 #Função expandPopulation recebe a população original e dobra o número novos indivíduos
 # Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
@@ -165,17 +58,6 @@ function binaryTournament(firstContender::Individual, secondContender::Individua
   end
 end
 
-#Função que imprime alguns valores de uma população de indivíduos
-function printPopulation(p::Array{Individual})
-  for i = 1:length(p)
-  println("--------------------")
-  println("Genotype:",repr(p[i].genotype))
-  println("Fenotype:",repr(p[i].fenotype))
-  println("Sp:",summary(p[i].Sp))
-  println("Np:",repr(p[i].np))
-  end
-end
-
 #Função que determina o valor dos fronts, np e Sp
 function setFronts(p::Array{Individual})
   for i = 1:length(p)
@@ -188,7 +70,7 @@ function setFronts(p::Array{Individual})
       end
     end
   end
-  sort!(p, lt = (x,y)-> x.np < y.np)
+  sort!(p, lt = (x,y)-> x.np < y.np) # Ordena a população com o valor de np ascendente
 
 end
 
@@ -204,5 +86,7 @@ function nsga2()
   printsum(P)
   setFronts(P)
   printPopulation(P)
+
+
 
 end
