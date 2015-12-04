@@ -5,6 +5,8 @@
 #
 ##
 
+module NSGA2
+
 # Determina constantes
 geneSize = 20
 pop_size = 20        # número par
@@ -17,25 +19,38 @@ include("initialization.jl")
 include("variation.jl")
 include("display.jl")
 
+# Seria bom uma especialização de rand
+function random(population::Array{Individual})
+  return population[rand(1:pop_size)]
+end
 
-#Função expandPopulation recebe a população original e dobra o número novos indivíduos
+"""
+Recebe a população original e dobra o número novos indivíduos
 # Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
+"""
 function expandPopulation(p::Array{Individual})
-   q::Array{Individual} =[]
+  q::Array{Individual} = []
+
   for i = 1:((length(p))/2)
-      newIndividual      = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
-      otherNewIndividual = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
-        if rand(0:1) >= crossover_prob
-          crossover(newIndividual, otherNewIndividual)
-        end
-        if rand(0:1) >= mutation_prob
-          singleBitMutation(newIndividual)
-        end
-        if rand(0:1) >= mutation_prob
-          singleBitMutation(otherNewIndividual)
-        end
-     q = push!(q, newIndividual)
-     q = push!(q, otherNewIndividual)
+    first_parent  = binaryTournament(random(p), random(p))
+    second_parent = binaryTournament(random(p), random(p))
+
+    first_child = Individual(first_parent.genotype)
+    second_child = Individual(second_parent.genotype)
+
+    if crossover_prob <= rand()
+      crossover(first_child, second_child)
+    end
+
+    if mutation_prob <= rand()
+      singleBitMutation(first_child)
+    end
+    if rand(0:1) >= mutation_prob
+      singleBitMutation(second_child)
+    end
+
+    q = push!(q, first_child)
+    q = push!(q, second_child)
   end
   append!(p,q)
 end
@@ -45,17 +60,17 @@ function binaryTournament(firstContender::Individual, secondContender::Individua
   # Próximas versões terão mais parâmetros de comparação
   # Nessa quem tiver o menor número de valor de fenotype ganha
   if firstContender.fenotype[1] < secondContender.fenotype[1]
-    return Individual(firstContender.genotype)
+    return firstContender
   end
 
   if(firstContender.fenotype[1] > secondContender.fenotype[1])
-    return Individual(secondContender.genotype)
+    return secondContender
   end
 
-  if(rand(0:100) > 50) #Caso os dois tenham resultados iguais
-    return Individual(firstContender.genotype)
+  if(rand() > 0.5) #Caso os dois tenham resultados iguais
+    return firstContender
   else
-    return Individual(secondContender.genotype)
+    return secondContender
   end
 end
 
@@ -122,3 +137,6 @@ function nsga2()
   printPopulation(P)
 
 end
+
+
+end # module
