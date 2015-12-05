@@ -40,18 +40,19 @@ function crossover(geneA::Array{Int8} , geneB::Array{Int8})
 end
 
 #Versão para tipo Individual
-function crossover(individualA::Individual, individualB::Individual)
-  if length(individualA.genotype) !=  length(individualB.genotype)
+function crossover(x::Individual, y::Individual)
+  if length(x.genotype) != length(y.genotype)
     println("Erro na função crossover: tamanho dos genes diferentes.")
     return
   end
-  i = rand(1:length(individualA.genotype))
-  #println(i) # Imprime locus aleatório
-  v_aux = copy(individualA.genotype)
-  individualA.genotype[i:end] = individualB.genotype[i:end]
-  individualB.genotype[i:end] = v_aux[i:end]
 
-  individualA.fenotype = initialize_fenotype(individualA.genotype)
-  individualB.fenotype = initialize_fenotype(individualB.genotype)
+  crossoverPoint = rand(1:length(x.genotype))
+  #println(i) # Imprime locus aleatório
+  v_aux = copy(x.genotype)
+  x.genotype[crossoverPoint:end] = y.genotype[crossoverPoint:end]
+  y.genotype[crossoverPoint:end] = v_aux[crossoverPoint:end]
+
+  x.fenotype = initialize_fenotype(x.genotype)
+  y.fenotype = initialize_fenotype(y.genotype)
 
 end

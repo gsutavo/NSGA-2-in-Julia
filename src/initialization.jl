@@ -41,5 +41,5 @@ end
 Cria uma população com pop_size indivíduos.
 """
 function initialize_population(pop_size::Int)
-  return [Individual(geneSize) for i in 1:pop_size];
+  return [Individual(GENE_SIZE) for i in 1:pop_size];
 end
