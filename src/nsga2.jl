@@ -5,7 +5,7 @@
 #
 ##
 
-module NSGA2
+module Nsga2
 
 # Determina constantes
 geneSize = 20
@@ -19,67 +19,99 @@ include("initialization.jl")
 include("variation.jl")
 include("display.jl")
 
-# Seria bom uma especialização de rand
+
+"""
+Retorna um indivíduo aleatório da população dada.
+"""
 function random(population::Array{Individual})
+  # Seria bom uma especialização de rand
   return population[rand(1:pop_size)]
+end
+
+
+"""
+Seleciona aleatoriamente 2 indivíduos da população.
+"""
+function random_parents(population::Array{Individual})
+  first  = binary_tournament(random(population), random(population))
+  second = binary_tournament(random(population), random(population))
+
+  return first, second
+end
+
+function should_crossover()
+  return crossover_prob <= rand()
+end
+
+function should_mutate()
+  return mutation_prob <= rand()
 end
 
 """
 Recebe a população original e dobra o número novos indivíduos
 # Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
 """
-function expandPopulation(p::Array{Individual})
+function expand_population(population::Array{Individual})
   q::Array{Individual} = []
 
-  for i = 1:((length(p))/2)
-    first_parent  = binaryTournament(random(p), random(p))
-    second_parent = binaryTournament(random(p), random(p))
+  num_steps = length(population)/2
 
-    first_child = Individual(first_parent.genotype)
-    second_child = Individual(second_parent.genotype)
+  for i = 1:num_steps
+    # children::Array{Individual} = random_parents(population)
+    first_child, second_child = random_parents(population)
 
-    if crossover_prob <= rand()
+    if should_crossover()
       crossover(first_child, second_child)
+      # crossover(children)
     end
 
-    if mutation_prob <= rand()
-      singleBitMutation(first_child)
-    end
-    if rand(0:1) >= mutation_prob
-      singleBitMutation(second_child)
+    children = [first_child, second_child]
+    for child in children
+      if should_mutate()
+        bit_mutation(child)
+      end
     end
 
-    q = push!(q, first_child)
-    q = push!(q, second_child)
+    append!(q, children)
   end
-  append!(p,q)
+
+  append!(population, q)
 end
 
-#Função binaryTournament recebe dois indivíduos e os compara, retorna cópia do melhor
-function binaryTournament(firstContender::Individual, secondContender::Individual)
+
+"""
+Indica se são equivalentes.
+"""
+function equals(a::Individual, b::Individual)
+  return a.fenotype[1] == b.fenotype[1]
+end
+
+
+"""
+Retorna o vencedor entre uma disputa.
+"""
+function winner(a::Individual, b::Individual)
+  return a.fenotype[1] < b.fenotype[1] ? a : b
+end
+
+
+#Função binary_tournament recebe dois indivíduos e os compara, retorna cópia do melhor
+function binary_tournament(firstContender::Individual, secondContender::Individual)
   # Próximas versões terão mais parâmetros de comparação
   # Nessa quem tiver o menor número de valor de fenotype ganha
-  if firstContender.fenotype[1] < secondContender.fenotype[1]
-    return firstContender
+  if equals(firstContender, secondContender)
+    return (rand() > 0.5) ? firstContender : secondContender
   end
 
-  if(firstContender.fenotype[1] > secondContender.fenotype[1])
-    return secondContender
-  end
-
-  if(rand() > 0.5) #Caso os dois tenham resultados iguais
-    return firstContender
-  else
-    return secondContender
-  end
+  return winner(firstContender, secondContender)
 end
 
 #Função que determina o valor dos fronts, np e Sp
-function setFronts(p::Array{Individual})
+function set_fronts(p::Array{Individual})
   for i = 1:length(p)
     for j = 1:length(p)
       if i != j
-        if  (dominates(p[i],p[j]))
+        if dominates(p[i],p[j])
           p[i].Sp = push!(p[i].Sp, p[j])
           p[j].np += 1
         end
@@ -118,23 +150,23 @@ end
 
 function nsga2()
   #Testes
-  P = initPopulation(pop_size) # População de tamanho pop_size é criada
-  expandPopulation(P)          # População inicial é expandida tamanho 2*pop_size, população pai + população filha
-  setFronts(P)                 # Determina o valor dos np e ranks
-  printPopulation(P)
+  P = initialize_population(pop_size) # População de tamanho pop_size é criada
+  expand_population(P)          # População inicial é expandida tamanho 2*pop_size, população pai + população filha
+  set_fronts(P)                 # Determina o valor dos np e ranks
+  print_population(P)
 
   for i = 1:generationNumber
        newP = P[1:pop_size]
        reset(newP)
-       expandPopulation(newP)
-       setFronts(newP)
+       expand_population(newP)
+       set_fronts(newP)
        P = newP
   end
 
   println("-----------------------------------")
   println("População final")
   println("-----------------------------------")
-  printPopulation(P)
+  print_population(P)
 
 end
 
