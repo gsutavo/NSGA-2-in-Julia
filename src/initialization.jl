@@ -5,41 +5,37 @@
 # Funções de inicialização
 ##
 
+# Função initGene recebe o valor de tamanho do gene (size) e cria um array desse tamanho com valores aleatórios 0 ou 1
+# retorna vetor completo
 
-"""
-Retorna um gene de tamanho size, que é um array valores aleatórios 0 ou 1 (Int8).
-"""
-function initialize_gene(size::Int)
-  return [convert(Int8, rand(0:1)) for i in 1:size]
+function initGene(size::Int)
+    array::Array{Int8,1} = []
+  for i = 1:size
+    array = push!(array,rand(0:1))
+  end
+   return array
 end
 
-
-"""
-Retorna a quantidade de ocorrências de x no array.
-"""
-function count(x, array::Array)
-  counter = 0
-  for element in array
-    if element == x
-      counter += 1
+#Função initFenotype recebe o genótipo e calcula o fenótipo relativo
+#Nesse caso, é o número de 1's presentes
+function initFenotype(entry::Array)
+  x = 0
+  for i = 1:length(entry)
+    if entry[i] > 0
+      x += 1
     end
   end
-  return counter
+  exit::Array{Int32} = []
+  exit = push!(exit, x)
+  return exit
 end
 
-
-"""
-Retorna o fenótipo relativo ao genótipo dado. Neste caso, é a quantidade de
-1's presentes.
-"""
-function initialize_fenotype(entry::Array)
-  return [convert(Int32, count(1, entry))]
-end
-
-
-"""
-Cria uma população com pop_size indivíduos.
-"""
-function initialize_population(pop_size::Int)
-  return [Individual(GENE_SIZE) for i in 1:pop_size];
+#Função initPopulation recebe o valor do tamanho da população (pop_size) e cria uma população com esse número de indivíduos
+# retorna vetor de indivíduos
+function initPopulation(pop_size::Int)
+    population::Array{Individual} =[]
+  for i = 1:pop_size
+    population = push!(population, Individual(geneSize))
+  end
+ return population
 end

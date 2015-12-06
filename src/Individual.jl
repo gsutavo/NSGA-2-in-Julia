@@ -13,16 +13,14 @@ type Individual
   Sp::Array{Individual,1} # vetor de soluções dominadas por esse indivíduo, inicializado vazio
   np::Int                 # número de outros indivíduos que dominam esse, inicializado em 0
   rank::Int               # rank ou front que essa solução pertence
-
   function Individual(size::Int) # construtor do tipo recebe inteiro e cria o Individual com valores aleatórios
-    genotype = initialize_gene(size)
-    fenotype = initialize_fenotype(genotype)
+    genotype = initGene(size)
+    fenotype = initFenotype(genotype)
     new(genotype,fenotype ,[],0,0)
   end
-
   function Individual(gene::Array{Int8}) # construtor do tipo que recebe vetor de inteiros e cria o Individual com ele como genotype
     genotype = copy(gene)
-    fenotype = initialize_fenotype(genotype)
+    fenotype = initFenotype(genotype)
     new(genotype,fenotype,[],0,0)
   end
 end

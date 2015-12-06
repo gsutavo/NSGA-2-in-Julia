@@ -5,8 +5,8 @@
 # Funções que introduzem variação
 ##
 
-#Função bit_mutation recebe um vetor e troca o valor em um locus aleatório
-function bit_mutation(gene::Array)
+#Função singleBitMutation recebe um vetor e troca o valor em um locus aleatório
+function singleBitMutation(gene::Array)
   x = rand(1:length(gene))
   if gene[x] > 0
     gene[x] = 0
@@ -15,15 +15,15 @@ function bit_mutation(gene::Array)
   end
 end
 
-#Função bit_mutation versão Individual
-function bit_mutation(individualA::Individual)
+#Função singleBitMutation versão Individual
+function singleBitMutation(individualA::Individual)
   x = rand(1:length(individualA.genotype))
   if individualA.genotype[x] > 0
      individualA.genotype[x] = 0
   else
      individualA.genotype[x] = 1
   end
-    individualA.fenotype = initialize_fenotype(individualA.genotype)
+    individualA.fenotype = initFenotype(individualA.genotype)
 end
 
 #Função crossover recebe dois vetores e troca os valores entre eles a partir em um locus aleatório
@@ -38,21 +38,19 @@ function crossover(geneA::Array{Int8} , geneB::Array{Int8})
   geneA[i:end] = geneB[i:end]
   geneB[i:end] = v_aux[i:end]
 end
-
 #Versão para tipo Individual
-function crossover(x::Individual, y::Individual)
-  if length(x.genotype) != length(y.genotype)
+function crossover(individualA::Individual,individualB::Individual)
+  if length(individualA.genotype) !=  length(individualB.genotype)
     println("Erro na função crossover: tamanho dos genes diferentes.")
     return
   end
-
-  crossoverPoint = rand(1:length(x.genotype))
+  i = rand(1:length(individualA.genotype))
   #println(i) # Imprime locus aleatório
-  v_aux = copy(x.genotype)
-  x.genotype[crossoverPoint:end] = y.genotype[crossoverPoint:end]
-  y.genotype[crossoverPoint:end] = v_aux[crossoverPoint:end]
+  v_aux = copy(individualA.genotype)
+  individualA.genotype[i:end] = individualB.genotype[i:end]
+  individualB.genotype[i:end] = v_aux[i:end]
 
-  x.fenotype = initialize_fenotype(x.genotype)
-  y.fenotype = initialize_fenotype(y.genotype)
+  individualA.fenotype = initFenotype(individualA.genotype)
+  individualB.fenotype = initFenotype(individualB.genotype)
 
 end

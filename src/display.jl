@@ -6,7 +6,7 @@
 ##
 
 #Função que imprime alguns valores de uma população de indivíduos
-function print_population(p::Array{Individual})
+function printPopulation(p::Array{Individual})
   for i = 1:length(p)
   println("--------------------")
   println("Genotype:",repr(p[i].genotype))
@@ -18,7 +18,7 @@ function print_population(p::Array{Individual})
 end
 
 # Retirado de http://samuelcolvin.github.io/JuliaByExample/#Arrays
-function print_sum(a)
+function printsum(a)
     # summary generates a summary of an object
     println(summary(a), ": ", repr(a))
 end
