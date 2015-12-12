@@ -167,7 +167,7 @@ function expand_population(population::Array{Individual})
     # Mutation
     for child in children
       if should_mutate()
-        bit_mutation(child)
+        singleBitMutation(child)
       end
     end
 

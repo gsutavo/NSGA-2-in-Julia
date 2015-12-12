@@ -1,124 +1,55 @@
 ##
-# 4 de dezembro de 2015
+# December 12th, 2015
 # NSGA-II in Julia
-# Gustavo Fernandes de Almeida 10/0012183
-#
+# Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
+# Guilherme N. Ramos            (gnramos@unb.br)
+# NSGA-II
 ##
 
-# Determina constantes
-geneSize = 20
-pop_size = 20        # número par
-crossover_prob = 0.5
-mutation_prob = 1/pop_size
-generationNumber = 100
-
 include("Individual.jl")
-include("initialization.jl")
 include("variation.jl")
+include("initialization.jl")
 include("display.jl")
+include("utils.jl")
 
 
-#Função expandPopulation recebe a população original e dobra o número novos indivíduos
-# Seleciona por torneio binário, aplica crossover e mutação com probabilidade definida
-function expandPopulation(p::Array{Individual})
-   q::Array{Individual} =[]
-  for i = 1:((length(p))/2)
-      newIndividual      = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
-      otherNewIndividual = binaryTournament(p[rand(1:length(p))],p[rand(1:length(p))])
-        if rand(0:1) >= crossover_prob
-          crossover(newIndividual, otherNewIndividual)
-        end
-        if rand(0:1) >= mutation_prob
-          singleBitMutation(newIndividual)
-        end
-        if rand(0:1) >= mutation_prob
-          singleBitMutation(otherNewIndividual)
-        end
-     q = push!(q, newIndividual)
-     q = push!(q, otherNewIndividual)
-  end
-  append!(p,q)
-end
+"""
+Assingn some constants
 
-#Função binaryTournament recebe dois indivíduos e os compara, retorna cópia do melhor
-function binaryTournament(firstContender::Individual, secondContender::Individual)
-  # Próximas versões terão mais parâmetros de comparação
-  # Nessa quem tiver o menor número de valor de fenotype ganha
-  if firstContender.fenotype[1] < secondContender.fenotype[1]
-    return Individual(firstContender.genotype)
-  end
+Determina constantes
+"""
 
-  if(firstContender.fenotype[1] > secondContender.fenotype[1])
-    return Individual(secondContender.genotype)
-  end
+geneSize = 25
+pop_size = 20
+CROSSOVER_PROBABILITY = 0.5
+MUTATION_PROBABILITY = 0.05
+generationNumber = 10
 
-  if(rand(0:100) > 50) #Caso os dois tenham resultados iguais
-    return Individual(firstContender.genotype)
-  else
-    return Individual(secondContender.genotype)
-  end
-end
-
-#Função que determina o valor dos fronts, np e Sp
-function setFronts(p::Array{Individual})
-  for i = 1:length(p)
-    for j = 1:length(p)
-      if i != j
-        if  (dominates(p[i],p[j]))
-          p[i].Sp = push!(p[i].Sp, p[j])
-          p[j].np += 1
-        end
-      end
-    end
-  end
-
-  sort!(p, lt = (x,y)-> x.np < y.np) # Ordena a população com o valor de np ascendente
-  lowestNp = p[1].np
-  current_rank = 1
-
-  for i = 1:length(p)
-    if p[i].np == lowestNp
-       p[i].rank = current_rank
-    else
-      current_rank+=1
-      lowestNp = p[i].np
-      p[i].rank = current_rank
-    end
-  end
-
-end
-
-#Função simplificada do processo de domicação
-function dominates(a::Individual, b::Individual)
-  return a.fenotype[1] < b.fenotype[1]
-end
-
-#Função que reinicia os valores de np e Sp
-function reset(p::Array{Individual})
-   for i = 1:length(p)
-    p[i].np = 0
-    p[i].Sp = []
-  end
-end
+"""
+Runs NSGA-II
+"""
 
 function nsga2()
-  #Testes
-  P = initPopulation(pop_size) # População de tamanho pop_size é criada
-  expandPopulation(P)          # População inicial é expandida tamanho 2*pop_size, população pai + população filha
-  setFronts(P)                 # Determina o valor dos np e ranks
-  printPopulation(P)
+  #Tests / Testes
+  P = initPopulation(pop_size)  # Population of size pop_size ie created
+                                # População de tamanho pop_size é criada
+  expand_population(P)          # Initial populations expands to twice its initial size
+                                # População inicial é expandida tamanho 2*pop_size, população pai + população filha
+  set_ranks(P)                  # Set ranks and np values
+                                # Determina o valor dos np e ranks
+  #printPopulation(P)
 
   for i = 1:generationNumber
-       newP = P[1:pop_size]
+       newP = P[1:pop_size]     # Get the pop_size bests (no crowding distance calculations yet)
+                                # Seleciona os pop_size melhores, calculo da crowding distance ainda não implementado
        reset(newP)
-       expandPopulation(newP)
-       setFronts(newP)
+       expand_population(newP)
+       set_ranks(newP)
        P = newP
   end
 
   println("-----------------------------------")
-  println("População final")
-  println("-----------------------------------")
+  println("Final Population")
   printPopulation(P)
 
 end
