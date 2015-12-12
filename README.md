@@ -16,6 +16,7 @@ Repositório para implementação do algoritmo de otimização multiobjetivo NSG
 ```sh
 $ git clone https://github.com/gsutavo/NSGA-2-in-Julia
 $ cd NSGA-2-in-Julia/src
+$ julia
 $ include("nsga2.jl")
 $ nsga2()
 ```
