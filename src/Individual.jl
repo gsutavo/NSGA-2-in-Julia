@@ -18,10 +18,10 @@ type Individual
   fenotype::Array{Int32}  # represents the features that emerge from this solution's genotype
                           # representa as características emergentes do genótipo
 
-  Sp::Array{Individual,1} # array of Individuals dominated by this one, initialized empty
+  S::Array{Individual,1} # array of Individuals dominated by this one, initialized empty
                           # vetor de soluções dominadas por esse indivíduo, inicializado vazio
 
-  np::Int                 # number of Individuals that dominate this one, initialized 0
+  n::Int                 # number of Individuals that dominate this one, initialized 0
                           # número de outros indivíduos que dominam esse, inicializado em 0
 
   rank::Int               # Individual's rank

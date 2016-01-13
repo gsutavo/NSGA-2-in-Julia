@@ -6,6 +6,21 @@
 # Helper/utilitary functions.
 ##
 
+"""
+Computes the dominance between individuals in the population
+"""
+function fast_non_dominated_sort(P::Array{Individual})
+  println("To be implemented...")
+end
+
+"""
+Defines the crownding distance of a front's individuals
+"""
+function crowding_distance_assigned(front::Array{Individual})
+  println("To be implemented...")
+end
+
+
 
 """
 Indicates if there should be a crossover.
@@ -91,8 +106,8 @@ Resets the population's characteristics.
 """
 function reset(population::Array{Individual})
   for x in population
-    x.np = 0
-    x.Sp = []
+    x.n = 0
+    x.S = []
     x.rank = 0
   end
 end
@@ -106,8 +121,8 @@ function compute_dominance(population::Array{Individual})
   for x in population
     for y in population
       if x != y && dominates(x, y)
-        x.Sp = push!(x.Sp, y)
-        y.np += 1
+        x.S = push!(x.S, y)
+        y.n += 1
       end
     end
   end
@@ -118,15 +133,15 @@ end
 Updates each individual's rank according to its relative dominance.
 """
 function update_rank(population::Array{Individual})
-  lowestNp = population[1].np
+  lowestN = population[1].n
   currentRank = 1
 
   for x in population
-    if x.np == lowestNp
+    if x.n == lowestN
        x.rank = currentRank
     else
       currentRank += 1
-      lowestNp = x.np
+      lowestN = x.n
       x.rank = currentRank
     end
   end
@@ -138,7 +153,7 @@ Defines the individual ranks in the population.
 function set_ranks(population::Array{Individual})
   compute_dominance(population)
 
-  sort!(population, lt = (x,y)-> x.np < y.np) # Ordena a população com o valor de np ascendente
+  sort!(population, lt = (x,y)-> x.n < y.n) # Ordena a população com o valor de n ascendente
 
   update_rank(population)
 end

@@ -35,7 +35,7 @@ function nsga2()
                                 # População de tamanho pop_size é criada
   expand_population(P)          # Initial populations expands to twice its initial size
                                 # População inicial é expandida tamanho 2*pop_size, população pai + população filha
-  set_ranks(P)                  # Set ranks and np values
+  set_ranks(P)                  # Set ranks and n values
                                 # Determina o valor dos np e ranks
   #printPopulation(P)
 

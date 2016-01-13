@@ -16,8 +16,8 @@ function printPopulation(p::Array{Individual})
   println("-----------------------------------")
   println("Genotype:",repr(p[i].genotype))
   println("Fenotype:",repr(p[i].fenotype))
-  println("Sp:",summary(p[i].Sp))
-  println("Np:",repr(p[i].np))
+  println("S:",summary(p[i].S))
+  println("n:",repr(p[i].n))
   println("Rank:", p[i].rank)
   end
 end
