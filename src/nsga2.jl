@@ -7,6 +7,7 @@
 ##
 
 include("Individual.jl")
+include("Front.jl")
 include("variation.jl")
 include("initialization.jl")
 include("display.jl")
@@ -19,8 +20,8 @@ Assingn some constants
 Determina constantes
 """
 
-geneSize = 25
-pop_size = 20
+geneSize = 3
+pop_size = 2
 CROSSOVER_PROBABILITY = 0.5
 MUTATION_PROBABILITY = 0.05
 generationNumber = 10
@@ -35,9 +36,14 @@ function nsga2()
                                 # População de tamanho pop_size é criada
   expand_population(P)          # Initial populations expands to twice its initial size
                                 # População inicial é expandida tamanho 2*pop_size, população pai + população filha
-  set_ranks(P)                  # Set ranks and n values
-                                # Determina o valor dos np e ranks
-  #printPopulation(P)
+  println("-----------------------------------")
+  println("Initial Population")
+  printPopulation(P)
+  println("-----------------------------------")
+  F = fast_non_dominated_sort(P)  # Set ranks and fronts
+                                  # Determina ranks e fronts
+  println("After fast_non_dominated sort")
+  printPopulation(P)
 
   for i = 1:generationNumber
        newP = P[1:pop_size]     # Get the pop_size bests (no crowding distance calculations yet)

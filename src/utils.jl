@@ -2,15 +2,64 @@
 # NSGA-II in Julia
 #
 # Guilherme N. Ramos (gnramos@unb.br)
+# Gustavo Fernandes de Almeida (gsutavo@outlook.com)
 #
 # Helper/utilitary functions.
 ##
 
 """
-Computes the dominance between individuals in the population
+Computes the ranks and define fronts for individuals in the population
 """
-function fast_non_dominated_sort(P::Array{Individual})
-  println("To be implemented...")
+function fast_non_dominated_sort(population::Array{Individual})
+
+  fronts::Array{Front} = []
+  currentFront::Array{Individual} = []
+  nextFront::Array{Individual} = []
+
+  for p in population
+    p.S = []
+    p.n = 0
+
+    for q in population
+      if p != q
+
+        if dominates(p,q)
+          p.S = push!(p.S, q)
+        end
+
+        if dominates(q,p)
+          p.n = p.n + 1
+        end
+
+      end
+     end
+
+    if p.n == 0
+      p.rank = 1
+      currentFront = push!(currentFront, p)
+    end
+  end
+
+    fronts = push!(fronts, Front(copy(currentFront)))
+    i = 1 # Initialize front counter
+
+    while !isempty(fronts[i].individuals)
+      nextFront = []
+      for x in fronts[i].individuals
+        for y in x.S
+          y.n = y.n - 1
+          if y.n == 0
+            y.rank = i+1
+            nextFront = push!(nextFront,y)
+          end
+        end
+      end
+        i = i + 1
+        fronts = push!(fronts, Front(nextFront))
+        #fronts[i] = Q
+    end
+
+    return fronts
 end
 
 """
