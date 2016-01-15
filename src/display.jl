@@ -19,6 +19,7 @@ function printPopulation(p::Array{Individual})
   println("S:",summary(p[i].S))
   println("n:",repr(p[i].n))
   println("Rank:", p[i].rank)
+  println("Crowding distance:", p[i].crowdingDistance)
   end
 end
 

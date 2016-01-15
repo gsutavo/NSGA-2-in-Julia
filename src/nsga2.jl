@@ -38,13 +38,16 @@ function nsga2()
                                 # População inicial é expandida tamanho 2*pop_size, população pai + população filha
   println("-----------------------------------")
   println("Initial Population")
-  printPopulation(P)
+  #printPopulation(P)
   println("-----------------------------------")
   F = fast_non_dominated_sort(P)  # Set ranks and fronts
                                   # Determina ranks e fronts
   println("After fast_non_dominated sort")
   printPopulation(P)
-
+  println("-----------------------------------")
+  println("Crowding distance")
+  crowding_distance_assigned(P) # Set the crowding distance of a front's individuals
+                                # Determina a crowding distance dos indivíduos de um front
   for i = 1:generationNumber
        newP = P[1:pop_size]     # Get the pop_size bests (no crowding distance calculations yet)
                                 # Seleciona os pop_size melhores, calculo da crowding distance ainda não implementado
@@ -56,6 +59,6 @@ function nsga2()
 
   println("-----------------------------------")
   println("Final Population")
-  printPopulation(P)
+  #printPopulation(P)
 
 end
