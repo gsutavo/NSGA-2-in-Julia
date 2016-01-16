@@ -40,7 +40,7 @@ function fast_non_dominated_sort(population::Array{Individual})
     end
   end
 
-    fronts = push!(fronts, Front(copy(currentFront)))
+    fronts = push!(fronts, Front(currentFront))
     i = 1 # Initialize front counter
 
     while !isempty(fronts[i].individuals)
@@ -78,15 +78,30 @@ function crowding_distance_assigned(front::Array{Individual})
     sort!(front, lt = (x,y)-> x.fenotype[i] < y.fenotype[i], rev = true)
     front[1].crowdingDistance = front[end].crowdingDistance = Inf32
 
-
     for y in 2:( frontLen - 1)
       front[y].crowdingDistance = front[y].crowdingDistance + (front[y-1].fenotype[i] - front[y+1].fenotype[i])/(front[1].fenotype[i] - front[end].fenotype[i])
+
+      if isnan(front[y].crowdingDistance)
+        front[y].crowdingDistance = 0
+      end
+     # println("Crowding Distance =", front[y].crowdingDistance, " + (", front[y-1].fenotype[i]," - ", front[y+1].fenotype[i],")/(",front[1].fenotype[i], "-", front[end].fenotype[i],")")
     end
   end
+
   return
 end
 
+"""
+Include a front into a population
+"""
+function includeFront(P::Array{Individual}, front::Array{Individual})
 
+  for x in front
+    P = push!(P,x)
+  end
+
+  return P
+end
 
 """
 Indicates if there should be a crossover.
