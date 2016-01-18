@@ -178,7 +178,7 @@ end
 Tests if x dominates y.
 """
 function dominates(x::Individual, y::Individual)
-  return x.fenotype[1] < y.fenotype[1]
+  return x.fenotype[1] < y.fenotype[1] && x.fenotype[2] > y.fenotype[2]
 end
 
 

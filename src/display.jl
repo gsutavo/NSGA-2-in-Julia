@@ -20,6 +20,9 @@ function printPopulation(p::Array{Individual})
   println("n:",repr(p[i].n))
   println("Rank:", p[i].rank)
   println("Crowding distance:", p[i].crowdingDistance)
+
+  print("Press enter to continue...");
+  x = readline(STDIN)
   end
 end
 

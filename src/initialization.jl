@@ -1,5 +1,5 @@
 ##
-# December 12th, 2015
+# January 17th, 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
 # Initialization functions
@@ -31,13 +31,39 @@ Função initFenotype recebe o genótipo e calcula o fenótipo relativo
 
 function initFenotype(entry::Array)
   x = 0
+  exit::Array{Int32} = []
+  auxArray::Array{Int32} = fill(0,55)
+
+  data = readcsv("../data/teste.csv")
+
   for i = 1:length(entry)
     if entry[i] > 0
-      x += 1
+      x = x + 1
     end
   end
-  exit::Array{Int32} = []
+
   exit = push!(exit, x)
+
+  for i = 1:length(entry)
+    if entry[i] == 1
+      for j = 1:55
+        if data[i,j] > 0
+          auxArray[j] = 1
+        end
+      end
+    end
+  end
+
+  x = 0
+
+  for i = 1:length(auxArray)
+    if auxArray[i] > 0
+      x = x + 1
+    end
+  end
+
+  exit = push!(exit, x)
+
   return exit
 end
 
