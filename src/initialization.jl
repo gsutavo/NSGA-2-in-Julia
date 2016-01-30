@@ -34,8 +34,6 @@ function initFenotype(entry::Array)
   exit::Array{Int32} = []
   auxArray::Array{Int32} = fill(0,55)
 
-  data = readcsv("../data/teste.csv")
-
   for i = 1:length(entry)
     if entry[i] > 0
       x = x + 1

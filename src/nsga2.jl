@@ -1,5 +1,5 @@
 ##
-# January 15th, 2016
+# January 30th, 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
 # Guilherme N. Ramos            (gnramos@unb.br)
@@ -20,12 +20,12 @@ Assingn some constants
 
 Determina constantes
 """
-
+data = readcsv("../data/teste.csv")
 geneSize = 25
 pop_size = 500
 CROSSOVER_PROBABILITY = 0.5
 MUTATION_PROBABILITY = 0.05
-generationNumber = 10
+generationNumber = 10000
 
 """
 Runs NSGA-II
@@ -41,7 +41,7 @@ function nsga2()
       #printPopulation(P)
 
     for k = 1:generationNumber
-      println("Generation", k)
+      println("Generation ", k)
       expand_population(P)          # Initial populations expands to twice its initial size
                                     # População inicial é expandida tamanho 2*pop_size, população pai + população filha
 
