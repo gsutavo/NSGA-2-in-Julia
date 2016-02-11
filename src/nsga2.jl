@@ -23,7 +23,7 @@ Determina constantes
 data = readcsv("../data/teste.csv")
 geneSize = 25
 pop_size = 500
-CROSSOVER_PROBABILITY = 0.5
+CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
 generationNumber = 10000
 
@@ -71,8 +71,9 @@ function nsga2()
   end
 
   println("-----------------------------------")
-  println("Final Population")
+  println("Results of interest:")
+  println("-----------------------------------")
   sort!(P, lt = (x,y)-> x.fenotype[1] < y.fenotype[1])
-  printPopulation(P)
+  printFile(P)
 
 end

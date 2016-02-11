@@ -151,7 +151,8 @@ end
 Tests if x and y are identical.
 """
 function isequal(x::Individual, y::Individual)
-  return x.fenotype[1] == y.fenotype[1]
+  #return x.genotype == y.genotype
+  return (x.fenotype[1] == y.fenotype[1]) && (x.fenotype[2] == y.fenotype[2])
 end
 
 
@@ -159,9 +160,8 @@ end
 Returns the winner of a tournament between x and y.
 """
 function winner(x::Individual, y::Individual)
-  # Próximas versões terão mais parâmetros de comparação
-  # Nessa quem tiver o menor número de valor de fenotype ganha
   return x.fenotype[1] < y.fenotype[1] ? x : y
+  #return ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] > y.fenotype[2]))? x : y
 end
 
 
