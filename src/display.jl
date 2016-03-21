@@ -1,10 +1,24 @@
 ##
-# December 12th, 2015
+# March 13 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida (gsutavo@outlook.com)
 # Display functions
 # Funções de apresentação
 ##
+"""
+Plots simple 2D graph that gives a summary of a population distribution
+"""
+function debug_plot(p::Array{Individual})
+  x1::Array{Int} = []
+  y1::Array{Int} = []
+  println("Plotting...")
+  for counter in 1:pop_size
+    x1 = push!(x1, p[counter].fenotype[1])
+    y1 = push!(y1, p[counter].fenotype[2])
+  end
+    plot(x = x1, y = y1,  Guide.XLabel("How many areas"), Guide.YLabel("How many aleles"),  Geom.beeswarm)
+
+end
 
 """
 Prints a brief description of each Individual in a population
@@ -27,11 +41,9 @@ function printPopulation(p::Array{Individual})
 end
 
 """
-Prints a brief description of each Individual in a population
-
-Imprime uma descrição de cada Individual em uma população
+Prints in a file and prompt some solutions, helps debugging
 """
-function printFile(p::Array{Individual})
+function debug_printFile(p::Array{Individual})
 
   outfile = open("exit.txt", "w")
 
@@ -39,19 +51,15 @@ function printFile(p::Array{Individual})
     if p[i].fenotype[1] < 9 && p[i].fenotype[2] == 55
       for j = 1:length(p[i].genotype)
         if(p[i].genotype[j]>0)
+        write(outfile, j,"-" )
         print(j, "-")
         end
       end
+     write(outfile,"\n")
      print("\n")
     end
   end
   close(outfile)
-end
-
-function aux()
-  write(outfile, j,"-" )
-    write(outfile,"\n")
-write(outfile, repr(p[i].genotype ),"\n" )
 end
 
 """

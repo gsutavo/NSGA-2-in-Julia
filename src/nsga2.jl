@@ -6,13 +6,13 @@
 # NSGA-II
 ##
 
+using Gadfly
 include("Individual.jl")
 include("Front.jl")
 include("variation.jl")
 include("initialization.jl")
 include("display.jl")
 include("utils.jl")
-#include("data.jl")
 
 
 """
@@ -25,7 +25,7 @@ geneSize = 25
 pop_size = 500
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
-generationNumber = 10000
+generationNumber = 100
 
 """
 Runs NSGA-II
@@ -36,11 +36,12 @@ function nsga2()
      #Tests / Testes
      P = initPopulation(pop_size)  # Population of size pop_size ie created
                                    # População de tamanho pop_size é criada
-        println("-----------------------------------")
+      println("-----------------------------------")
       println("Initial Population")
       #printPopulation(P)
 
     for k = 1:generationNumber
+
       println("Generation ", k)
       expand_population(P)          # Initial populations expands to twice its initial size
                                     # População inicial é expandida tamanho 2*pop_size, população pai + população filha
@@ -74,6 +75,7 @@ function nsga2()
   println("Results of interest:")
   println("-----------------------------------")
   sort!(P, lt = (x,y)-> x.fenotype[1] < y.fenotype[1])
-  printFile(P)
+  debug_printFile(P)
+  debug_plot(P)
 
 end
