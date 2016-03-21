@@ -21,7 +21,7 @@ $ include("nsga2.jl")
 $ nsga2()
 ```
 
-You need the package [Gadfly](http://dcjones.github.io/Gadfly.jl/) to get the plots. If you don't have it installed, you ought to instal by doing:
+You need the package [Gadfly](http://dcjones.github.io/Gadfly.jl/). If you don't have it installed, you ought to instal by doing:
 ```sh
 $ julia
 $ Pkg.add("Gadfly")
