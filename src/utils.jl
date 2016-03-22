@@ -66,12 +66,13 @@ end
 Defines the crownding distance of a front's individuals
 """
 function crowding_distance_assigned(front::Array{Individual})
+
   frontLen = 0
-  for x in front
+  for x in front                 # Set every crowding distance to zero
     x.crowdingDistance = 0
     frontLen = frontLen + 1
   end
-
+  #printPopulation(front)
   n_objectives = length(front[1].fenotype)
 
   for i in n_objectives
@@ -84,10 +85,8 @@ function crowding_distance_assigned(front::Array{Individual})
       if isnan(front[y].crowdingDistance)
         front[y].crowdingDistance = 0
       end
-     # println("Crowding Distance =", front[y].crowdingDistance, " + (", front[y-1].fenotype[i]," - ", front[y+1].fenotype[i],")/(",front[1].fenotype[i], "-", front[end].fenotype[i],")")
-    end
+     end
   end
-
   return
 end
 

@@ -1,10 +1,14 @@
 ##
-# January 17th, 2016
+# March 22th, 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
 # Initialization functions
 # Funções de inicialização
 ##
+
+
+sizeAlelleArray = 55 # Defines who many different alelles are expected 
+
 
 """
 Initializes a gene, receives the gene size (size) and returns an array with random values 0 or 1
@@ -32,7 +36,7 @@ Função initFenotype recebe o genótipo e calcula o fenótipo relativo
 function initFenotype(entry::Array)
   x = 0
   exit::Array{Int32} = []
-  auxArray::Array{Int32} = fill(0,55)
+  auxArray::Array{Int32} = fill(0,sizeAlelleArray)
 
   for i = 1:length(entry)
     if entry[i] > 0
@@ -44,7 +48,7 @@ function initFenotype(entry::Array)
 
   for i = 1:length(entry)
     if entry[i] == 1
-      for j = 1:55
+      for j = 1:sizeAlelleArray
         if data[i,j] > 0
           auxArray[j] = 1
         end
