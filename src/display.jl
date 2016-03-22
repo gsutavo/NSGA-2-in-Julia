@@ -51,11 +51,11 @@ function debug_printFile(p::Array{Individual})
     if p[i].fenotype[1] < 9 && p[i].fenotype[2] == 55
       for j = 1:length(p[i].genotype)
         if(p[i].genotype[j]>0)
-        write(outfile, j,"-" )
-        print(j, "-")
+          write(outfile, string(j,"-") )
+          print(j, "-")
         end
       end
-     write(outfile,"\n")
+     write(outfile,string("\n"))
      print("\n")
     end
   end
