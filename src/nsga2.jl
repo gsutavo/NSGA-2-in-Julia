@@ -22,7 +22,7 @@ Determina constantes
 """
 data = readcsv("../data/teste.csv")
 geneSize = 25
-pop_size = 50
+pop_size = 500
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
 generationNumber = 100
@@ -64,6 +64,7 @@ function nsga2()
           # Sort the front based on crownding distance
           # Ordena o front com o valor de crowding distance decrescente
           sort!(F[i].individuals, lt = (x,y)-> x.crowdingDistance < y.crowdingDistance, rev = true)
+          #printPopulation(P)
         for j in 1:pop_size - length(newP)
           newP = push!(newP, F[i].individuals[j])
         end
@@ -76,6 +77,7 @@ function nsga2()
   println("Results of interest:")
   println("-----------------------------------")
   sort!(P, lt = (x,y)-> x.fenotype[1] < y.fenotype[1])
+  printPopulation(P)
   debug_printFile(P)
   debug_plot(P)
 

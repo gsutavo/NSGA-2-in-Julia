@@ -7,7 +7,7 @@
 ##
 
 
-sizeAlelleArray = 55 # Defines who many different alelles are expected 
+sizeAlelleArray = 55 # Defines who many different alelles are expected
 
 
 """
@@ -27,10 +27,10 @@ end
 """
 Initializes the fenotype. receives an array of integers (should be the genotype) and calculates the features based on the array received
 Returns an array of features
-Note: for now calcules just the number of ones present
+Note: for now counts just the number of ones present and calculates how many are missing
 
 Função initFenotype recebe o genótipo e calcula o fenótipo relativo
-#Nesse caso, é o número de 1's presentes
+Nesse caso, conta o número de 1's presentes e calula os faltantes
 """
 
 function initFenotype(entry::Array)
@@ -64,6 +64,7 @@ function initFenotype(entry::Array)
     end
   end
 
+  x = sizeAlelleArray - x # Instead present alleles, this shows missing ones
   exit = push!(exit, x)
 
   return exit

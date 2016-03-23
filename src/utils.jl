@@ -77,17 +77,32 @@ function crowding_distance_assigned(front::Array{Individual})
 
   for i in n_objectives
     sort!(front, lt = (x,y)-> x.fenotype[i] < y.fenotype[i], rev = true)
+
     front[1].crowdingDistance = front[end].crowdingDistance = Inf32
+    maximumValue    = front[1].fenotype[i]
+    minimumValue    = front[end].fenotype[i]
 
-    for y in 2:( frontLen - 1)
-      front[y].crowdingDistance = front[y].crowdingDistance + (front[y-1].fenotype[i] - front[y+1].fenotype[i])/(front[1].fenotype[i] - front[end].fenotype[i])
+    for y in 2:(frontLen - 1)
+        greaterNeighbor = front[y-1].fenotype[i]
+        lowerNeighbor   = front[y+1].fenotype[i]
+        front[y].crowdingDistance = front[y].crowdingDistance + (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue))
 
-      if isnan(front[y].crowdingDistance)
-        front[y].crowdingDistance = 0
+        if(greaterNeighbor < lowerNeighbor)
+          println("Error: crowding distance calculation is wrong!
+                  \n This front:")
+          for k in 1:frontLen
+            print(front[k].fenotype[i],"-")
+          end
+        println("Max value:",maximumValue,
+              "\n Min value:",minimumValue,
+              "\n Greater neighbor:",greaterNeighbor,
+              "\n Lower neighbor:",lowerNeighbor,
+              "\n Crowding distance:",front[y].crowdingDistance)
+        aux = readline(STDIN)
       end
-     end
-  end
-  return
+    end
+   end
+return
 end
 
 """
@@ -159,8 +174,8 @@ end
 Returns the winner of a tournament between x and y.
 """
 function winner(x::Individual, y::Individual)
-  return x.fenotype[1] < y.fenotype[1] ? x : y
-  #return ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] > y.fenotype[2]))? x : y
+  #return x.fenotype[1] < y.fenotype[1] ? x : y
+  return ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] < y.fenotype[2]))? x : random([x, y])
 end
 
 
@@ -175,9 +190,15 @@ end
 
 """
 Tests if x dominates y.
+In our scenario both fenotypes must be minimized
+Example:
+[2, 1] < [1,1]
+[1, 2] < [1,1]
+[1, 2] = [2,1] -> No answer is any better
 """
 function dominates(x::Individual, y::Individual)
-  return x.fenotype[1] < y.fenotype[1] && x.fenotype[2] > y.fenotype[2]
+  return x.fenotype[1] < y.fenotype[1] &&
+         x.fenotype[2] < y.fenotype[2]
 end
 
 
