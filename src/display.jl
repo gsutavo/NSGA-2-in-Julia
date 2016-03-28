@@ -5,26 +5,6 @@
 # Display functions
 # Funções de apresentação
 ##
-"""
-Plots simple 2D graph that gives a summary of a population distribution
-"""
-function debug_plot(p::Array{Individual})
-  x1::Array{Int} = []
-  y1::Array{Int} = []
-  println("Plotting...")
-  for counter in 1:pop_size
-    x1 = push!(x1, p[counter].fenotype[1])
-    y1 = push!(y1, p[counter].fenotype[2])
-  end
-    plot( x = x1,
-          y = y1,
-          Stat.xticks(ticks=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]),
-          #Stat.yticks(ticks=[1,2,...,55]),
-          Guide.XLabel("How many areas"),
-          Guide.YLabel("How many missing alelles"),
-          Geom.beeswarm)
-
-end
 
 """
 Prints a brief description of each Individual in a population
@@ -45,6 +25,20 @@ function printPopulation(p::Array{Individual})
   x = readline(STDIN)
   end
 end
+
+"""
+Prints in a file
+"""
+function createInterFile(p::Array{Individual})
+
+  outfile = open("inter.csv", "w")
+
+  for i = 1:length(p)
+      write(outfile, string(p[i].fenotype[1],",",p[i].fenotype[2],"\n"))
+  end
+  close(outfile)
+end
+
 
 """
 Prints in a file and prompt some solutions, helps debugging

@@ -67,15 +67,16 @@ Defines the crownding distance of a front's individuals
 """
 function crowding_distance_assigned(front::Array{Individual})
 
-  frontLen = 0
+  frontLen = length(front)
+
   for x in front                 # Set every crowding distance to zero
     x.crowdingDistance = 0
-    frontLen = frontLen + 1
   end
+
   #printPopulation(front)
   n_objectives = length(front[1].fenotype)
-
-  for i in n_objectives
+println("----------------------------------------------------------------------")
+  for i in 1:n_objectives
     sort!(front, lt = (x,y)-> x.fenotype[i] < y.fenotype[i], rev = true)
 
     front[1].crowdingDistance = front[end].crowdingDistance = Inf32
@@ -87,11 +88,15 @@ function crowding_distance_assigned(front::Array{Individual})
         lowerNeighbor   = front[y+1].fenotype[i]
         front[y].crowdingDistance = front[y].crowdingDistance + (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue))
 
-        if(greaterNeighbor < lowerNeighbor)
+        print("Objetivo ", i," - Individuo:", front[y].genotype)
+        print(" - valor adicionado:", (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue)))
+        println(" GN:",greaterNeighbor," LN:",lowerNeighbor," MaxV:", maximumValue," MinV:", minimumValue)
+################################################################################
+        if(greaterNeighbor < lowerNeighbor || maximumValue < minimumValue)
           println("Error: crowding distance calculation is wrong!
                   \n This front:")
           for k in 1:frontLen
-            print(front[k].fenotype[i],"-")
+            print(front[k].genotype[i])
           end
         println("Max value:",maximumValue,
               "\n Min value:",minimumValue,
@@ -100,21 +105,11 @@ function crowding_distance_assigned(front::Array{Individual})
               "\n Crowding distance:",front[y].crowdingDistance)
         aux = readline(STDIN)
       end
+################################################################################
     end
    end
+println("----------------------------------------------------------------------")
 return
-end
-
-"""
-Include a front into a population
-"""
-function includeFront(P::Array{Individual}, front::Array{Individual})
-
-  for x in front
-    P = push!(P,x)
-  end
-
-  return P
 end
 
 """
@@ -141,7 +136,6 @@ function random(population::Array{Individual})
   index = rand(1:length(population))
   return population[index]
 end
-
 
 """
 Randomly selects n Individuals from the given array (with repetition).
@@ -174,8 +168,15 @@ end
 Returns the winner of a tournament between x and y.
 """
 function winner(x::Individual, y::Individual)
-  #return x.fenotype[1] < y.fenotype[1] ? x : y
-  return ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] < y.fenotype[2]))? x : random([x, y])
+  if ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] < y.fenotype[2]))
+    return x
+  end
+
+  if ((x.fenotype[1] > y.fenotype[1]) && (x.fenotype[2] > y.fenotype[2]))
+    return y
+  end
+
+  return random([x, y])
 end
 
 
@@ -197,68 +198,9 @@ Example:
 [1, 2] = [2,1] -> No answer is any better
 """
 function dominates(x::Individual, y::Individual)
-  return x.fenotype[1] < y.fenotype[1] &&
-         x.fenotype[2] < y.fenotype[2]
+  return x.fenotype[2] < y.fenotype[2] &&
+         x.fenotype[1] < y.fenotype[1]
 end
-
-
-"""
-Resets the population's characteristics.
-"""
-function reset(population::Array{Individual})
-  for x in population
-    x.n = 0
-    x.S = []
-    x.rank = 0
-  end
-end
-
-
-
-"""
-Computes the dominance between individuals in the population.
-"""
-function compute_dominance(population::Array{Individual})
-  for x in population
-    for y in population
-      if x != y && dominates(x, y)
-        x.S = push!(x.S, y)
-        y.n += 1
-      end
-    end
-  end
-end
-
-
-"""
-Updates each individual's rank according to its relative dominance.
-"""
-function update_rank(population::Array{Individual})
-  lowestN = population[1].n
-  currentRank = 1
-
-  for x in population
-    if x.n == lowestN
-       x.rank = currentRank
-    else
-      currentRank += 1
-      lowestN = x.n
-      x.rank = currentRank
-    end
-  end
-end
-
-"""
-Defines the individual ranks in the population.
-"""
-function set_ranks(population::Array{Individual})
-  compute_dominance(population)
-
-  sort!(population, lt = (x,y)-> x.n < y.n) # Ordena a população com o valor de n ascendente
-
-  update_rank(population)
-end
-
 
 
 """
