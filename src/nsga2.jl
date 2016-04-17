@@ -20,12 +20,15 @@ Assingn some constants
 
 Determina constantes
 """
-data = readcsv("../data/teste.csv")
+data_matrixA = readcsv("../data/matrizA.csv")
+data_matrixB = readcsv("../data/matrizB_normal.csv")
+
 geneSize = 25
 pop_size = 500
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
 generationNumber = 1000
+DEBUG_FLAG = false
 
 """
 Runs NSGA-II
@@ -57,6 +60,9 @@ function nsga2()
         append!(newP, F[i].individuals)
         i = i + 1
       end
+
+################################################################################
+      if(DEBUG_FLAG)
         println("==================================================================")
         println("Tamanho do newP:",length(newP))
         println("Número de fronts:", length(F))
@@ -74,6 +80,8 @@ function nsga2()
         end
         println("Número de [0,55] no 1ºfront:",  teste)
         println("==================================================================")
+      end
+################################################################################
 
       if length(newP) < pop_size
           crowding_distance_assigned(F[i].individuals) # Set the crowding distance of a front's individuals
@@ -82,25 +90,39 @@ function nsga2()
           # Sort the front based on crownding distance
           # Ordena o front com o valor de crowding distance decrescente
           sort!(F[i].individuals, lt = (x,y)-> x.crowdingDistance < y.crowdingDistance, rev = true)
+
+################################################################################
+        if(DEBUG_FLAG)
           for c in 1: length(F[i].individuals)
           println(c, ":",F[i].individuals[c].genotype," - ", F[i].individuals[c].crowdingDistance)
         end
-          #printPopulation(P)
-        for j in 1:(pop_size - length(newP))
-          newP = push!(newP, F[i].individuals[j])
+      end
+       #printPopulation(P)
+################################################################################
+
+        individualsNeeded = pop_size - length(newP)
+
+        for j in 1:individualsNeeded
+          if F[i].individuals[j].crowdingDistance > 0
+            newP = push!(newP, F[i].individuals[j])
+          else
+            append!(newP,random( individualsNeeded - j,F[i].individuals[j:end]))
+            break
+          end
         end
       end
 
-      ####################
-      teste = 0
-      for g in 1:length(newP)
-        if newP[g].fenotype[1] == 0 && newP[g].fenotype[2] == 55
-          teste = teste +1
+################################################################################
+      if(DEBUG_FLAG)
+          teste = 0
+          for g in 1:length(newP)
+            if newP[g].fenotype[1] == 0 && newP[g].fenotype[2] == 55
+              teste = teste +1
+            end
+          end
+          println("Número de [0,55] na nova população:",teste)
         end
-      end
-      println("Número de [0,55] na nova população:",teste)
-      okasd = readline(STDIN)
-      ####################
+################################################################################
 
       P = copy(newP)
 

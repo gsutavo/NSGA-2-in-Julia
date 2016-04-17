@@ -49,7 +49,7 @@ function initFenotype(entry::Array)
   for i = 1:length(entry)
     if entry[i] == 1
       for j = 1:sizeAlelleArray
-        if data[i,j] > 0
+        if data_matrixA[i,j] > 0
           auxArray[j] = 1
         end
       end

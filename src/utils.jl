@@ -88,10 +88,13 @@ println("----------------------------------------------------------------------"
         lowerNeighbor   = front[y+1].fenotype[i]
         front[y].crowdingDistance = front[y].crowdingDistance + (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue))
 
-        print("Objetivo ", i," - Individuo:", front[y].genotype)
-        print(" - valor adicionado:", (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue)))
-        println(" GN:",greaterNeighbor," LN:",lowerNeighbor," MaxV:", maximumValue," MinV:", minimumValue)
 ################################################################################
+        if(DEBUG_FLAG)
+
+        print("Number of objetive ", i," - Individual:", front[y].genotype)
+        print(" - value added:", (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue)))
+        println(" GN:",greaterNeighbor," LN:",lowerNeighbor," MaxV:", maximumValue," MinV:", minimumValue)
+
         if(greaterNeighbor < lowerNeighbor || maximumValue < minimumValue)
           println("Error: crowding distance calculation is wrong!
                   \n This front:")
@@ -105,7 +108,9 @@ println("----------------------------------------------------------------------"
               "\n Crowding distance:",front[y].crowdingDistance)
         aux = readline(STDIN)
       end
+    end
 ################################################################################
+
     end
    end
 println("----------------------------------------------------------------------")
