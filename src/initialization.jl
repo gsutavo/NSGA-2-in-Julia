@@ -35,8 +35,13 @@ Nesse caso, conta o número de 1's presentes e calula os faltantes
 
 function initFenotype(entry::Array)
   x = 0
-  exit::Array{Int32} = []
+  exit::Array{Float32} = []
   auxArray::Array{Int32} = fill(0,sizeAlelleArray)
+
+
+"""
+First objetive: number of 1's in genotype
+"""
 
   for i = 1:length(entry)
     if entry[i] > 0
@@ -45,6 +50,10 @@ function initFenotype(entry::Array)
   end
 
   exit = push!(exit, x)
+
+"""
+Second objetive: minimize missing alleles
+"""
 
   for i = 1:length(entry)
     if entry[i] == 1
@@ -66,6 +75,34 @@ function initFenotype(entry::Array)
 
   x = sizeAlelleArray - x # Instead present alleles, this shows missing ones
   exit = push!(exit, x)
+
+"""
+Third objetive: maximize allele frequency - sum of matrix B values
+"""
+y = 0.0
+
+for i in 1:length(entry)
+  if entry[i] == 1
+    y = y + sum(data_matrixB[i,1:end])
+  end
+end
+
+ exit = push!(exit,y)
+
+"""
+Fourth objetive: maximize heterozygozity - matrix C values
+Note: heterozygozity is a negative value - greater heterozygozity is the lower 
+"""
+
+x = 0
+
+for i in 1:length(entry)
+  if entry[i] == 1
+    x = x + sum(data_matrixC[i, 1:end])
+ end
+ end
+
+ exit = push!(exit,x)
 
   return exit
 end

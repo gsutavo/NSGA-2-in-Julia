@@ -22,12 +22,13 @@ Determina constantes
 """
 data_matrixA = readcsv("../data/matrizA.csv")
 data_matrixB = readcsv("../data/matrizB_normal.csv")
+data_matrixC = readcsv("../data/matrizC_25by9.csv")
 
 geneSize = 25
 pop_size = 500
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
-generationNumber = 1000
+generationNumber = 10000
 DEBUG_FLAG = false
 
 """
@@ -45,7 +46,7 @@ function nsga2()
 
       for k = 1:generationNumber
 
-      println("Generation ", k)
+#     println("Generation ", k)
 #     printPopulation(P)
       expand_population(P)        # Initial populations expands to twice its initial size
                                   # População inicial é expandida tamanho 2*pop_size, população pai + população filha
@@ -135,7 +136,7 @@ function nsga2()
 
   sort!(P, lt = (x,y)-> x.crowdingDistance < y.crowdingDistance, rev = true)
   #sort!(P, lt = (x,y)-> x.fenotype[1] < y.fenotype[1])
-  printPopulation(P)
+  # printPopulation(P)
   debug_printFile(P)
   createInterFile(P)
 
@@ -147,7 +148,7 @@ function nsga2()
     end
   end
   println(teste)
-  okasd = readline(STDIN)
+#  okasd = readline(STDIN)
 
 
 

@@ -75,7 +75,7 @@ function crowding_distance_assigned(front::Array{Individual})
 
   #printPopulation(front)
   n_objectives = length(front[1].fenotype)
-println("----------------------------------------------------------------------")
+  #println("----------------------------------------------------------------------")
   for i in 1:n_objectives
     sort!(front, lt = (x,y)-> x.fenotype[i] < y.fenotype[i], rev = true)
 
@@ -113,7 +113,7 @@ println("----------------------------------------------------------------------"
 
     end
    end
-println("----------------------------------------------------------------------")
+#println("----------------------------------------------------------------------")
 return
 end
 
@@ -165,7 +165,11 @@ Tests if x and y are identical.
 """
 function isequal(x::Individual, y::Individual)
   #return x.genotype == y.genotype
-  return (x.fenotype[1] == y.fenotype[1]) && (x.fenotype[2] == y.fenotype[2])
+  return ((x.fenotype[1] == y.fenotype[1]) &&
+          (x.fenotype[2] == y.fenotype[2]) &&
+          (x.fenotype[3] == y.fenotype[3]) &&
+          (x.fenotype[4] == y.fenotype[4])
+          )
 end
 
 
@@ -173,14 +177,23 @@ end
 Returns the winner of a tournament between x and y.
 """
 function winner(x::Individual, y::Individual)
-  if ((x.fenotype[1] < y.fenotype[1]) && (x.fenotype[2] < y.fenotype[2]))
+  if ((x.fenotype[1] < y.fenotype[1]) &&   # Lower is better
+      (x.fenotype[2] < y.fenotype[2]) &&   # Lower is better
+      (x.fenotype[3] > y.fenotype[3]) &&   # Higher is better
+      (x.fenotype[4] < y.fenotype[4])      # Lower is better
+      )
     return x
   end
 
-  if ((x.fenotype[1] > y.fenotype[1]) && (x.fenotype[2] > y.fenotype[2]))
+  if ((x.fenotype[1] > y.fenotype[1]) &&
+      (x.fenotype[2] > y.fenotype[2]) &&
+      (x.fenotype[3] < y.fenotype[3]) &&
+      (x.fenotype[4] > y.fenotype[4])
+      )
     return y
   end
 
+  # No solution is definite better
   return random([x, y])
 end
 
@@ -203,8 +216,10 @@ Example:
 [1, 2] = [2,1] -> No answer is any better
 """
 function dominates(x::Individual, y::Individual)
-  return x.fenotype[2] < y.fenotype[2] &&
-         x.fenotype[1] < y.fenotype[1]
+  return x.fenotype[4] < y.fenotype[4] && #MIN (MAX but fenotype[4] is negative)
+         x.fenotype[3] > y.fenotype[3] && #MAX
+         x.fenotype[2] < y.fenotype[2] && #MIN
+         x.fenotype[1] < y.fenotype[1]    #MIN
 end
 
 

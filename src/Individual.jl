@@ -15,7 +15,7 @@ type Individual
   genotype::Array{Int8,1} # represents this solution's genetic code: an array of integers 0 or 1
                           # representa o código genético dessa solução: um vetor com valores 0 ou 1
 
-  fenotype::Array{Int32}  # represents the features that emerge from this solution's genotype
+  fenotype::Array{Float32}  # represents the features that emerge from this solution's genotype
                           # representa as características emergentes do genótipo
 
   S::Array{Individual,1} # array of Individuals dominated by this one, initialized empty
