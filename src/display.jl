@@ -34,7 +34,7 @@ function createInterFile(p::Array{Individual})
   outfile = open("inter.csv", "w")
 
   for i = 1:length(p)
-      write(outfile, string(p[i].fenotype[1],",",p[i].fenotype[2],",",p[i].fenotype[3],"\n"))
+      write(outfile, string(p[i].fenotype[1],",",p[i].fenotype[2],",",p[i].fenotype[3],",",p[i].fenotype[4],"\n"))
   end
   close(outfile)
 end

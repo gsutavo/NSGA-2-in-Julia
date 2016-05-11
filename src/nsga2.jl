@@ -28,7 +28,7 @@ geneSize = 25
 pop_size = 500
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.05
-generationNumber = 10000
+generationNumber = 100
 DEBUG_FLAG = false
 
 """
@@ -46,7 +46,7 @@ function nsga2()
 
       for k = 1:generationNumber
 
-#     println("Generation ", k)
+     println("Generation ", k)
 #     printPopulation(P)
       expand_population(P)        # Initial populations expands to twice its initial size
                                   # População inicial é expandida tamanho 2*pop_size, população pai + população filha
