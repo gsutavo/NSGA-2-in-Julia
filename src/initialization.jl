@@ -1,5 +1,5 @@
 ##
-# March 22th, 2016
+# June 5th, 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
 # Initialization functions
@@ -18,9 +18,7 @@ retorna vetor completo
 """
 function initGene(size::Int)
     array::Array{Int8,1} = []
-  for i = 1:size
-    array = push!(array,rand(0:1))
-  end
+   array = rand(0:1,size)
    return array
 end
 
@@ -34,7 +32,7 @@ Nesse caso, conta o número de 1's presentes e calula os faltantes
 """
 
 function initFenotype(entry::Array)
-  x = 0
+  objetiveValue = 0
   exit::Array{Float32} = []
   auxArray::Array{Int32} = fill(0,sizeAlelleArray)
 
@@ -42,14 +40,8 @@ function initFenotype(entry::Array)
 """
 First objetive: number of 1's in genotype
 """
-
-  for i = 1:length(entry)
-    if entry[i] > 0
-      x = x + 1
-    end
-  end
-
-  exit = push!(exit, x)
+  objetiveValue = sum(entry)
+  exit = push!(exit, objetiveValue)
 
 """
 Second objetive: minimize missing alleles
@@ -65,16 +57,10 @@ Second objetive: minimize missing alleles
     end
   end
 
-  x = 0
-
-  for i = 1:length(auxArray)
-    if auxArray[i] > 0
-      x = x + 1
-    end
-  end
-
-  x = sizeAlelleArray - x # Instead present alleles, this shows missing ones
-  exit = push!(exit, x)
+  objetiveValue = 0
+  x = sum(auxArray)
+  objetiveValue = sizeAlelleArray - x # Instead present alleles, this shows missing ones
+  exit = push!(exit, objetiveValue)
 
 """
 Third objetive: maximize allele frequency - sum of matrix B values
@@ -91,18 +77,27 @@ end
 
 """
 Fourth objetive: maximize heterozygozity - matrix C values
-Note: heterozygozity is a negative value - greater heterozygozity is the lower 
+Note: heterozygozity is a negative value - greater heterozygozity is the lower
 """
 
-x = 0
+objetiveValue = 0
 
 for i in 1:length(entry)
   if entry[i] == 1
-    x = x + sum(data_matrixC[i, 1:end])
+    objetiveValue = objetiveValue + sum(data_matrixC[i, 1:end])
  end
  end
 
- exit = push!(exit,x)
+ exit = push!(exit,objetiveValue)
+
+"""
+Fifth objetive: minimize HWE - matrix D values
+
+"""
+objetiveValue = 0
+
+objetiveValue = abs(sum(data_matrixD.*entry))
+exit = push!(exit,objetiveValue)
 
   return exit
 end

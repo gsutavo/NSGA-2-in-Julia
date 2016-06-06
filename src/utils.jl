@@ -164,12 +164,7 @@ end
 Tests if x and y are identical.
 """
 function isequal(x::Individual, y::Individual)
-  #return x.genotype == y.genotype
-  return ((x.fenotype[1] == y.fenotype[1]) &&
-          (x.fenotype[2] == y.fenotype[2]) &&
-          (x.fenotype[3] == y.fenotype[3]) &&
-          (x.fenotype[4] == y.fenotype[4])
-          )
+  return x.genotype == y.genotype
 end
 
 
@@ -177,23 +172,15 @@ end
 Returns the winner of a tournament between x and y.
 """
 function winner(x::Individual, y::Individual)
-  if ((x.fenotype[1] < y.fenotype[1]) &&   # Lower is better
-      (x.fenotype[2] < y.fenotype[2]) &&   # Lower is better
-      (x.fenotype[3] > y.fenotype[3]) &&   # Higher is better
-      (x.fenotype[4] < y.fenotype[4])      # Lower is better
-      )
+  # Does x dominates y?
+  if (dominates(x,y))
     return x
   end
-
-  if ((x.fenotype[1] > y.fenotype[1]) &&
-      (x.fenotype[2] > y.fenotype[2]) &&
-      (x.fenotype[3] < y.fenotype[3]) &&
-      (x.fenotype[4] > y.fenotype[4])
-      )
+  # Does y dominates x?
+  if (dominates(y,x))
     return y
   end
-
-  # No solution is definite better
+  # No solution is definitely better
   return random([x, y])
 end
 
@@ -216,10 +203,13 @@ Example:
 [1, 2] = [2,1] -> No answer is any better
 """
 function dominates(x::Individual, y::Individual)
-  return x.fenotype[4] < y.fenotype[4] && #MIN (MAX but fenotype[4] is negative)
-         x.fenotype[3] > y.fenotype[3] && #MAX
-         x.fenotype[2] < y.fenotype[2] && #MIN
-         x.fenotype[1] < y.fenotype[1]    #MIN
+
+  return x.fenotype[1] < y.fenotype[1] &&   # Lower is better - MIN
+         x.fenotype[2] < y.fenotype[2] &&   # Lower is better - MIN
+         x.fenotype[3] > y.fenotype[3] &&   # Higher is better - MAX
+         x.fenotype[4] < y.fenotype[4] &&   # Lower is better  - MAX (but fenotype[4] is negative)
+         x.fenotype[5] < y.fenotype[5]      # Lower is better - MIN
+
 end
 
 
