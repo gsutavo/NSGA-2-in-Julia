@@ -7,7 +7,6 @@
 
 Repository for implementation of multi-objective optimization algorithm NSGA-II in Julia.
 
-Repositório para implementação do algoritmo de otimização multiobjetivo NSGA-II na linguagem Julia.
 
 ### How do I run this?
 
