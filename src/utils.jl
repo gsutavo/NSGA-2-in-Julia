@@ -1,9 +1,7 @@
 ##
 # NSGA-II in Julia
-#
 # Guilherme N. Ramos (gnramos@unb.br)
 # Gustavo Fernandes de Almeida (gsutavo@outlook.com)
-#
 # Helper/utilitary functions.
 ##
 
@@ -73,9 +71,7 @@ function crowding_distance_assigned(front::Array{Individual})
     x.crowdingDistance = 0
   end
 
-  #printPopulation(front)
   n_objectives = length(front[1].fenotype)
-  #println("----------------------------------------------------------------------")
   for i in 1:n_objectives
     sort!(front, lt = (x,y)-> x.fenotype[i] < y.fenotype[i], rev = true)
 
@@ -87,29 +83,6 @@ function crowding_distance_assigned(front::Array{Individual})
         greaterNeighbor = front[y-1].fenotype[i]
         lowerNeighbor   = front[y+1].fenotype[i]
         front[y].crowdingDistance = front[y].crowdingDistance + (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue))
-
-################################################################################
-        if(DEBUG_FLAG)
-
-        print("Number of objetive ", i," - Individual:", front[y].genotype)
-        print(" - value added:", (( greaterNeighbor - lowerNeighbor)/( maximumValue - minimumValue)))
-        println(" GN:",greaterNeighbor," LN:",lowerNeighbor," MaxV:", maximumValue," MinV:", minimumValue)
-
-        if(greaterNeighbor < lowerNeighbor || maximumValue < minimumValue)
-          println("Error: crowding distance calculation is wrong!
-                  \n This front:")
-          for k in 1:frontLen
-            print(front[k].genotype[i])
-          end
-        println("Max value:",maximumValue,
-              "\n Min value:",minimumValue,
-              "\n Greater neighbor:",greaterNeighbor,
-              "\n Lower neighbor:",lowerNeighbor,
-              "\n Crowding distance:",front[y].crowdingDistance)
-        aux = readline(STDIN)
-      end
-    end
-################################################################################
 
     end
    end
@@ -137,7 +110,6 @@ end
 Returns a random Individual from the given array.
 """
 function random(population::Array{Individual})
-  # Seria bom uma especialização de rand
   index = rand(1:length(population))
   return population[index]
 end
@@ -207,7 +179,7 @@ function dominates(x::Individual, y::Individual)
   return x.fenotype[1] < y.fenotype[1] &&   # Lower is better - MIN
          x.fenotype[2] < y.fenotype[2] &&   # Lower is better - MIN
          x.fenotype[3] > y.fenotype[3] &&   # Higher is better - MAX
-         x.fenotype[4] < y.fenotype[4] &&   # Lower is better  - MAX (but fenotype[4] is negative)
+         x.fenotype[4] < y.fenotype[4] &&   # Lower is better  - MAX ( fenotype[4] is negative)
          x.fenotype[5] < y.fenotype[5]      # Lower is better - MIN
 
 end

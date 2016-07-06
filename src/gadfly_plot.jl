@@ -1,9 +1,7 @@
 ##
-# March 24 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida (gsutavo@outlook.com)
 # Display functions - Plotting using Gadfly
-# Funções de apresentação
 ##
 
 using Gadfly

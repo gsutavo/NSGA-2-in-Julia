@@ -1,20 +1,12 @@
 ##
-# June 5th, 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida  (gsutavo@outlook.com)
 # Initialization functions
-# Funções de inicialização
 ##
 
-
-sizeAlelleArray = 55 # Defines who many different alelles are expected
-
-
 """
-Initializes a gene, receives the gene size (size) and returns an array with random values 0 or 1
-
-Função initGene recebe o valor de tamanho do gene (size) e cria um array desse tamanho com valores aleatórios 0 ou 1
-retorna vetor completo
+Initializes a gene, receives the gene size (size) and returns an array with
+random values 0 or 1
 """
 function initGene(size::Int)
     array::Array{Int8,1} = []
@@ -23,16 +15,15 @@ function initGene(size::Int)
 end
 
 """
-Initializes the fenotype. receives an array of integers (should be the genotype) and calculates the features based on the array received
+Initializes the fenotype. receives an array of integers (should be the genotype)
+and calculates the features based on the array received
 Returns an array of features
-Note: for now counts just the number of ones present and calculates how many are missing
 
-Função initFenotype recebe o genótipo e calcula o fenótipo relativo
-Nesse caso, conta o número de 1's presentes e calula os faltantes
 """
 
 function initFenotype(entry::Array)
   objetiveValue = 0
+  sizeAlelleArray = size(data_matrixA)[2] # Defines how many different alelles are expected
   exit::Array{Float32} = []
   auxArray::Array{Int32} = fill(0,sizeAlelleArray)
 
@@ -104,9 +95,6 @@ end
 
 """
 Initializes a population, receives the population size and returns an array of randomly created Individuals
-
-Função initPopulation recebe o valor do tamanho da população (pop_size) e cria uma população com esse número de indivíduos
-retorna vetor de indivíduos
 """
 function initPopulation(pop_size::Int)
     population::Array{Individual} =[]

@@ -1,15 +1,11 @@
 ##
-# March 13 2016
 # NSGA-II in Julia
 # Gustavo Fernandes de Almeida (gsutavo@outlook.com)
 # Display functions
-# Funções de apresentação
 ##
 
 """
 Prints a brief description of each Individual in a population
-
-Imprime uma descrição de cada Individual em uma população
 """
 function printPopulation(p::Array{Individual})
   for i = 1:length(p)
